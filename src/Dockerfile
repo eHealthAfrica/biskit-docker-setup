@@ -1,5 +1,7 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4
+FROM ehealthafrica/ckan:2.8.4 as base
+ENV CKAN_HOME /srv/app/src/ckan/ckan
+ENV GRID_HOME /srv/app/src/ckanext-grid
 
 USER root
 RUN apk add --update-cache \
@@ -9,7 +11,7 @@ RUN apk add --update-cache \
             geos \
             geos-dev
 
-##TODO: Remove unnecesary libs
+# TODO: Remove unnecesary libs
 RUN apk add --no-cache \
             bash \
             g++ \
@@ -32,12 +34,17 @@ RUN apk add --no-cache \
 
 ARG GITHUB_TOKEN
 
-RUN pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics &&\
+RUN pip install --upgrade pip &&\
+    pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics &&\
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-googleanalytics/master/requirements.txt &&\
     pip install -e git+https://github.com/ckan/ckanext-geoview.git#egg=ckanext-geoview &&\
-    pip install -r https://raw.githubusercontent.com/ckan/ckanext-geoview/master/pip-requirements.txt &&\
-    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git#egg=ckanext-biskit &&\
-    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-geoview/master/pip-requirements.txt
+
+# install what follows from repos cloned locally
+ENV EXT_PATH ${APP_DIR}/src/extensions
+COPY src/extensions/ ${EXT_PATH}/
+RUN pip install -e ${EXT_PATH}/ckanext-biskit &&\
+    pip install -r ${EXT_PATH}/ckanext-biskit/requirements.txt
 
 
 ENV CKAN__PLUGINS envvars stats biskit googleanalytics datastore datapusher stats image_view text_view \
@@ -48,10 +55,10 @@ VOLUME /var/lib/ckan/
 
 RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.plugins = ${CKAN__PLUGINS}"
 
-ENV CKAN_SITE_URL http://ckan:5000
+ENV CKAN_SITE_URL ${CKAN_SITE_URL}
 RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.site_url = ${CKAN_SITE_URL}"
 
-COPY prerun.py /srv/app/prerun.py
+COPY ckan/prerun.py /srv/app/prerun.py
 
 USER ckan
 
