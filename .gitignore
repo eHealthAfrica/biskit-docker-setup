@@ -14,4 +14,6 @@ tlog*
 .data
 .vscode
 
+[._]tmp/
 src/extensions/
+solr/mycores/ckan/data

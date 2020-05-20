@@ -1,0 +1,92 @@
+version: '3.0'
+
+services:
+  #-----------------------------------#
+  #       Postgres                    #
+  #-----------------------------------#
+  postgres:
+    image: mdillon/postgis:9.6
+    hostname: postgres
+    domainname: localdomain
+    volumes:
+      - ./postgres/create_ckan_database_objects.sh:/docker-entrypoint-initdb.d/create_ckan_database_objects.sh
+      - ./postgres/setup_remote_connections.sh:/docker-entrypoint-initdb.d/setup_remote_connections.sh
+      - pg_data:/var/lib/postgresql/data
+    env_file: .env
+    networks:
+      local:
+
+  #-----------------------------------#
+  #       Solr                        #
+  #-----------------------------------#
+  solr:
+    build: solr
+    image: ckan-solr
+    hostname: solr
+    domainname: localdomain
+    ports:
+      - "8983:8983"
+    volumes:
+      - ./solr/mycores:/opt/solr/server/solr/mycores
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - ckan
+    networks:
+      local:
+
+  #-----------------------------------#
+  #       Redis                       #
+  #-----------------------------------#
+  redis:
+    image: redis:5-alpine
+    hostname: redis
+    domainname: localdomain
+    networks:
+      local:
+
+  #-----------------------------------#
+  #       Datapusher                  #
+  #-----------------------------------#
+  datapusher:
+    image: keitaro/ckan-datapusher:0.0.14
+    hostname: datapusher
+    domainname: localdomain
+    ports:
+      - "8000:8000"
+    links:
+      - "ckan:eoc"
+    networks:
+      local:
+
+  #-----------------------------------#
+  #       CKAN                        #
+  #-----------------------------------#
+  ckan:
+    build:
+      context: ./ckan
+      dockerfile: Dockerfile
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    hostname: ckan
+    image: ckan
+    domainname: localdomain
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - solr
+      - redis
+    volumes:
+      - ckan_storage:/var/lib/ckan
+      # placeholder: dev-mappings
+    env_file: .env
+    networks:
+      local:
+
+networks:
+  local:
+
+volumes:
+  ckan_storage:
+  pg_data:

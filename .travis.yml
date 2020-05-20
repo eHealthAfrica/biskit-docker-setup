@@ -1,0 +1,28 @@
+language: python
+
+python:
+  - "3.6"
+
+services:
+  - docker
+
+
+# before_install:
+#   - openssl aes-256-cbc -k $encrypt_key -in gcp-key.json.enc -out gcp-key.json -d
+#   - openssl aes-256-cbc -k $encrypt_key -in gcp-key-prod.json.enc -out gcp-key-prod.json -d
+
+install:
+  - pip install push-app-version
+
+script:
+  - ./scripts/build.sh
+
+deploy:
+  - provider: script
+    script: "./scripts/push.sh"
+    skip_cleanup: true
+    on:
+      branch: develop
+
+after_deploy:
+  - ./scripts/trigger-deploy.sh
