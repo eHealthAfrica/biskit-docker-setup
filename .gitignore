@@ -1,0 +1,17 @@
+*.pyc
+*.doc
+*.pos
+*.tim
+*.tip
+*.si
+*.fdt
+*.fdx
+*.nvd
+*.nvm
+*.fnm
+tlog*
+.env*
+.data
+.vscode
+
+src/extensions/
