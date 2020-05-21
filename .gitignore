@@ -15,5 +15,8 @@ tlog*
 .vscode
 
 [._]tmp/
+src/core/
 src/extensions/
 solr/mycores/ckan/data
+
+docker-compose.dev.yml
