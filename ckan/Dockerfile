@@ -1,5 +1,5 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4
+FROM ehealthafrica/ckan:2.8.4-alpine
 
 USER root
 RUN apk add --update-cache \
@@ -40,7 +40,7 @@ RUN pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=c
     pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt
 
 
-ENV CKAN__PLUGINS envvars stats biskit googleanalytics datastore datapusher stats image_view text_view \
+ENV CKAN__PLUGINS envvars biskit googleanalytics datastore datapusher stats image_view text_view \
                   recline_view webpage_view resource_proxy geojson_view
 
 RUN mkdir -p /var/lib/ckan && chown -R ckan:ckan /var/lib/ckan/
@@ -50,8 +50,6 @@ RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.plugins = $
 
 ENV CKAN_SITE_URL http://ckan:5000
 RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.site_url = ${CKAN_SITE_URL}"
-
-COPY prerun.py /srv/app/prerun.py
 
 USER ckan
 

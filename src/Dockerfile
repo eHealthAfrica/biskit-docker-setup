@@ -1,5 +1,5 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4 as base
+FROM ehealthafrica/ckan:2.8.4-alpine as base
 ENV CKAN_HOME /srv/app/src/ckan/ckan
 ENV GRID_HOME /srv/app/src/ckanext-grid
 
@@ -47,7 +47,7 @@ RUN pip install -e ${EXT_PATH}/ckanext-biskit &&\
     pip install -r ${EXT_PATH}/ckanext-biskit/requirements.txt
 
 
-ENV CKAN__PLUGINS envvars stats biskit googleanalytics datastore datapusher stats image_view text_view \
+ENV CKAN__PLUGINS envvars biskit googleanalytics datastore datapusher stats image_view text_view \
                   recline_view webpage_view resource_proxy geojson_view
 
 RUN mkdir -p /var/lib/ckan && chown -R ckan:ckan /var/lib/ckan/
@@ -57,8 +57,6 @@ RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.plugins = $
 
 ENV CKAN_SITE_URL ${CKAN_SITE_URL}
 RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.site_url = ${CKAN_SITE_URL}"
-
-COPY ckan/prerun.py /srv/app/prerun.py
 
 USER ckan
 
