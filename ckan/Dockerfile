@@ -1,43 +1,33 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4-alpine
+FROM ehealthafrica/ckan:2.8.4 as base
 
 USER root
-RUN apk add --update-cache \
-            # lib geos are avaiable through alpine edge repo
-            --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
-            --allow-untrusted \
-            geos \
-            geos-dev
-
-##TODO: Remove unnecesary libs
-RUN apk add --no-cache \
-            bash \
-            g++ \
-            gcc \
-            libffi-dev \
-            libstdc++ \
-            libxml2 \
-            libxml2-dev \
-            libxslt \
-            libxslt-dev \
-            make \
-            musl-dev \
-            pcre \
-            python2-dev \
-            openssl-dev \
-            py-lxml \
-            jpeg-dev \
-            zlib-dev \
-            supervisor
+RUN apt-get -q -y update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
+    && apt-get -q -y install \
+       libgeos-dev \
+       python-shapely \
+       gdal-bin \
+       cron
 
 ARG GITHUB_TOKEN
 
-RUN pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics &&\
-    pip install -r https://raw.githubusercontent.com/ckan/ckanext-googleanalytics/master/requirements.txt &&\
+RUN pip install --upgrade pip &&\
+    pip install -e git+https://github.com/eHealthAfrica/ckanext-hierarchy.git#egg=ckanext-hierarchy &&\
+    pip install -e git+https://github.com/ckan/ckanext-scheming.git#egg=ckanext-scheming &&\
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-scheming/master/requirements.txt &&\
+    pip install -e git+https://github.com/frictionlessdata/ckanext-validation#egg=ckanext-validation &&\
+    pip install -r https://raw.githubusercontent.com/frictionlessdata/ckanext-validation/master/requirements.txt &&\
     pip install -e git+https://github.com/ckan/ckanext-geoview.git#egg=ckanext-geoview &&\
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-geoview/master/pip-requirements.txt &&\
+    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/gather2_integration.git@v0.0.2#egg=ckanext-gather2_integration &&\
+    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/gather2_integration/v0.0.2/requirements.txt &&\
+    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-eoc.git@migration/ckan-2.8#egg=ckanext-eoc &&\
+    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-eoc/migration/ckan-2.8/requirements.txt\
+    pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics &&\
     pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git#egg=ckanext-biskit &&\
-    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt
+    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt \
+    pip install supervisor future
 
 
 ENV CKAN__PLUGINS envvars biskit googleanalytics datastore datapusher stats image_view text_view \
