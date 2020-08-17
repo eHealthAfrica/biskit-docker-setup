@@ -13,6 +13,7 @@ RUN apt-get -q -y update \
 ARG GITHUB_TOKEN
 
 RUN pip install --upgrade pip &&\
+    pip install supervisor future &&\
     pip install -e git+https://github.com/eHealthAfrica/ckanext-hierarchy.git#egg=ckanext-hierarchy &&\
     pip install -e git+https://github.com/ckan/ckanext-scheming.git#egg=ckanext-scheming &&\
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-scheming/master/requirements.txt &&\
@@ -24,10 +25,10 @@ RUN pip install --upgrade pip &&\
     pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/gather2_integration/v0.0.2/requirements.txt &&\
     pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-eoc.git@migration/ckan-2.8#egg=ckanext-eoc &&\
     pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-eoc/migration/ckan-2.8/requirements.txt\
-    pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics &&\
-    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git#egg=ckanext-biskit &&\
-    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt &&\
-    pip install supervisor future
+    pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics
+
+RUN pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git#egg=ckanext-biskit &&\
+    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt
 
 
 ENV CKAN__PLUGINS envvars biskit googleanalytics datastore datapusher stats image_view text_view \
