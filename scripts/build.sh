@@ -5,4 +5,4 @@ set -ex
 envsubst < .env.template > .env
 
 # build Docker image
-docker-compose build ckan solr
+docker-compose  build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} ckan solr

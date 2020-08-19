@@ -32,7 +32,7 @@ RUN pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-
 
 
 ENV CKAN__PLUGINS envvars biskit googleanalytics datastore datapusher stats image_view text_view \
-                  recline_view webpage_view resource_proxy geojson_view
+                  recline_view webpage_view resource_proxy geojson_view hierarchy_display hierarchy_form
 
 RUN mkdir -p /var/lib/ckan && chown -R ckan:ckan /var/lib/ckan/
 VOLUME /var/lib/ckan/
