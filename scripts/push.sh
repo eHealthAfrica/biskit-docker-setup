@@ -12,8 +12,8 @@ if [ "$TRAVIS_BRANCH" == "develop" ]; then
 fi
 
 # tag images
-docker tag ckan "$IMAGE_REPO/$PROJECT/$APP/ckan:$ENV"
-docker tag ckan "$IMAGE_REPO/$PROJECT/$APP/ckan:$TRAVIS_COMMIT"
+docker tag biskit-ckan "$IMAGE_REPO/$PROJECT/$APP/ckan:$ENV"
+docker tag biskit-ckan "$IMAGE_REPO/$PROJECT/$APP/ckan:$TRAVIS_COMMIT"
 docker tag ckan-solr "$IMAGE_REPO/$PROJECT/$APP/solr:$ENV"
 docker tag ckan-solr "$IMAGE_REPO/$PROJECT/$APP/solr:$TRAVIS_COMMIT"
 
