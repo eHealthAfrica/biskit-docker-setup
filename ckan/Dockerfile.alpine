@@ -1,18 +1,38 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4 as base
+FROM ehealthafrica/ckan:2.8.4-alpine as base
 
 USER root
-RUN apt-get -q -y update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
-    && apt-get -q -y install \
-       libgeos-dev \
-       python-shapely \
-       gdal-bin \
-       cron
+RUN apk add --update-cache \
+            # lib geos are avaiable through alpine edge repo
+            --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ \
+            --allow-untrusted \
+            geos \
+            geos-dev
+
+# TODO: Remove unnecesary libs
+RUN apk add --no-cache \
+            bash \
+            g++ \
+            gcc \
+            libffi-dev \
+            libstdc++ \
+            libxml2 \
+            libxml2-dev \
+            libxslt \
+            libxslt-dev \
+            make \
+            musl-dev \
+            pcre \
+            python2-dev \
+            openssl-dev \
+            py-lxml \
+            jpeg-dev \
+            zlib-dev
+
 
 ARG GITHUB_TOKEN
 
-# avoid installing supervisor via apt-get as it needs to be run as ckan user
+# avoid installing supervisor via apk add as it needs to be run as ckan user
 RUN pip install --upgrade pip &&\
     pip install supervisor future &&\
     pip install -e git+https://github.com/eHealthAfrica/ckanext-hierarchy.git#egg=ckanext-hierarchy &&\
@@ -25,7 +45,7 @@ RUN pip install --upgrade pip &&\
 
 
 ENV CKAN__PLUGINS envvars biskit googleanalytics datastore datapusher stats image_view text_view \
-                  recline_view webpage_view resource_proxy geojson_view hierarchy_display hierarchy_form
+                  recline_view webpage_view resource_proxy geojson_view
 
 RUN mkdir -p /var/lib/ckan && chown -R ckan:ckan /var/lib/ckan/
 VOLUME /var/lib/ckan/
