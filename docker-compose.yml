@@ -1,4 +1,4 @@
-version: '3.0'
+version: '3.8'
 
 services:
   #-----------------------------------#
@@ -63,13 +63,13 @@ services:
   #       CKAN                        #
   #-----------------------------------#
   ckan:
+    image: biskit-ckan-dev
     build:
       context: ./ckan
       dockerfile: Dockerfile
       args:
         GITHUB_TOKEN: ${GITHUB_TOKEN}
     hostname: ckan
-    image: ckan
     domainname: localdomain
     ports:
       - "5000:5000"
@@ -79,7 +79,7 @@ services:
       - redis
     volumes:
       - ckan_storage:/var/lib/ckan
-      # placeholder: dev-mappings
+      - ./src/ckanext-biskit:/srvv/app/src/ckanext-biskit
     env_file: .env
     networks:
       local:
