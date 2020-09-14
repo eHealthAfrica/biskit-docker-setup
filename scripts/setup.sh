@@ -110,7 +110,7 @@ function gen_env_file {
   fi
 
   set -Eeo pipefail
-  envsubst < .env.template > .env
+  envsubst < env.template > .env
   echo -e "\033[92;1m[.env]\033[0m file generated!"
   final_warning
 }
