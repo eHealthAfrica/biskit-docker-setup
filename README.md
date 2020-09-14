@@ -62,7 +62,6 @@ Then add extension in `ckan_plugins` e.g:
 
 ```sh
 ENV CKAN__PLUGINS googleanalytics
-
 ```
 
 ## Envars
@@ -71,7 +70,7 @@ Environment variables are loaded from `.env` file. The base CKAN image included 
 `ckan/Dockerfile` loads [ckanext-envvars](https://github.com/okfn/ckanext-envvars)
 extension for reading the variables.
 
-To setup the env vars rename `.env.template` to `.env` and modify it depending on your
+To setup the env vars rename `env.template` to `.env` and modify it depending on your
 own needs. The Envvars extension checks for environmental variables conforming to an
 expected format and updates the corresponding CKAN config settings with its value.
 Follow the name formating explained in the [official docs](https://github.com/okfn/ckanext-envvars#ckanext-envvars)
@@ -81,19 +80,33 @@ for adding new variables.
 
 ## Quick start
 
-Rename the included `.env.template` to `.env` and modify it depending on your needs.
+To setup a local development environment run:
+
+```sh
+./scripts/setup.sh init
+```
+
+This creates a `.env` file using `env.template`. The `.env` file defines environment
+variables require to run the setup. Review and update the `.env` file as necessary.
+Afterwards run:
+
+```sh
+./scripts/setup.sh init
+```
+
+This time, all repositories for the setup will be cloned into the `src` folder.
 
 To start the portal use:
 
-    $ docker-compose up -d --build
+```sh
+docker-compose up --build
+```
 
 To stop the portal use:
 
-    $ docker-compose down
-
-To get the log information use:
-
-    $ docker-compose logs -f [service_name]
+```sh
+docker-compose down
+```
 
 Make sure that the solr directory has the right ownership `sudo chown -R 8983:8983 solr`
 or simply start the project by running `make up`.
