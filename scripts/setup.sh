@@ -131,9 +131,6 @@ function show_help {
   """
 }
 
-clone_repos
-exit 0
-
 case "${1:-''}" in
   purge )
     echo_msg "Purging the local development env setup ..."
