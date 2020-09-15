@@ -2,11 +2,11 @@
 
 * [Introduction](#introdcution)
 * [Basic structure](#basicsetup)
-    * [CKAN](#ckan)
-    * [Postgres](#postgres)
-    * [SOLR](#solr)
-    * [DataPusher](#datapusher)
-    * [Redis](#redis)
+  * [CKAN](#ckan)
+  * [Postgres](#postgres)
+  * [SOLR](#solr)
+  * [DataPusher](#datapusher)
+  * [Redis](#redis)
 * [Envvars](#envvars)
 * [Quick Start](#quickstart)
 
@@ -80,14 +80,22 @@ for adding new variables.
 
 ## Quick start
 
-To setup a local development environment run:
+> **Bash v4.x and above is required**
+
+To set up a local development environment begin by running:
 
 ```sh
 ./scripts/setup.sh init
 ```
 
-This creates a `.env` file using `env.template`. The `.env` file defines environment
-variables require to run the setup. Review and update the `.env` file as necessary.
+This creates a `.env` file using `env.template`. The `.env` file defines environment variables required to run the setup.
+Review and update the `.env` file as necessary. Update the following environment variables:
+
+- `GITHUB_TOKEN`: Generate your GitHub token and input the value. Instructions are [here](
+  https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line).
+- Update value for `CKAN_SYSADMIN_NAME` & `CKAN_SYSADMIN_PASSWORD` to set the login credentials for the EOC Data Portal
+  installation as a system administrator.
+
 Afterwards run:
 
 ```sh
@@ -102,11 +110,19 @@ To start the portal use:
 docker-compose up --build
 ```
 
+Open `http://localhost:5000` or `http://eoc:5000` in your browser. In order to use `http://eoc:5000` add
+
+```text
+127.0.0.1    eoc
+```
+
+to your `/etc/hosts` file.
+
 To stop the portal use:
 
 ```sh
 docker-compose down
 ```
 
-Make sure that the solr directory has the right ownership `sudo chown -R 8983:8983 solr`
-or simply start the project by running `make up`.
+Make sure that the solr directory has the right ownership `sudo chown -R 8983:8983 solr` or simply start the project
+by running `make up`.
