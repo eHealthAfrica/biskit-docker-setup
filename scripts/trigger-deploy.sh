@@ -5,7 +5,7 @@ set -Eeuo pipefail
 export GOOGLE_APPLICATION_CREDENTIALS="gcp-key-prod.json"
 export RELEASE_BUCKET="eha-software-releases";
 
-if [ "$TRAVIS_BRANCH" == "conf/setup" ]; then
+if [ "$TRAVIS_BRANCH" == "develop" ]; then
     GCS_PROJECTS="biskit-dataportal-dev"
 fi
 

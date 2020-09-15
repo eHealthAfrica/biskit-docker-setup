@@ -2,7 +2,10 @@
 
 set -ex
 
-envsubst < .env.template > .env
+envsubst < env.template > .env
 
 # build Docker image
-docker-compose  build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} ckan solr
+docker-compose -f docker-compose.yml \
+               -f docker-compose.prod.yml \
+               build --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} \
+               ckan solr
