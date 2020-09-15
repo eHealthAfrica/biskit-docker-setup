@@ -4,6 +4,11 @@ set -Eeuo pipefail
 SRC_DIR="./src"
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
 
+declare -A REPO1=([name]=ckan [app]=core [branch]=ckan-2.8.4 [usr]=ckan)
+declare -A REPO2=([name]=datapusher [app]=core [branch]=master [usr]=ckan)
+declare -A REPO3=([name]=ckanext-biskit [app]=biskit [branch]=master [usr]=ehealthafrica)
+REPOS=('REPO1' 'REPO2' 'REPO3')
+
 function check_openssl {
   which openssl > /dev/null
 }
@@ -31,50 +36,27 @@ function final_warning {
 }
 
 function clone_repos {
-  local fetch_all=${1:-"no"}
-  if [[ "${fetch_all}" == "--all" ]]; then
-    fetch_all="yes"
-  fi
+  local target=$1
 
-  local CKAN_VERSION=ckan-2.8.4
-  local DATAPUSHER_VERSION=0.0.14
+  for repo in ${REPOS[@]}; do
+    app=$(eval echo "\${${repo}[app]}")
+    if [[ "${target}" == "${app}" ]]; then
+      branch=$(eval echo "\${${repo}[branch]}")
+      name=$(eval echo "\${${repo}[name]}")
+      usr=$(eval echo "\${${repo}[usr]}")
 
-  local CKAN_GITHUB_BASEURL=git@github.com:ckan
-  local CKAN_GITHUB_REPO_NAMES=( "ckan" "datapusher" )
+      repo_url="git@github.com:${usr}/${name}.git"
 
-  local EHA_GITHUB_BASEURL=git@github.com:eHealthAfrica
-  local EHA_GITHUB_REPO_NAMES=( "ckanext-biskit" )
-
-  if [[ ! -d ${SRC_DIR} ]]; then
-    echo_msg "Creating 'src' folder ..."
-    mkdir -p ${SRC_DIR}
-  fi
-
-  # clone ckan repos locally
-  for repo in "${CKAN_GITHUB_REPO_NAMES[@]}"
-  do
-    if [[ "${fetch_all}" == "yes" ]]; then
-      if [[ ! -d ${SRC_DIR}/${repo} ]]; then
-        echo_msg "fetching repository for ${repo} ..."
-        if [[ "${repo}" == "ckan" ]]; then
-          git clone --branch ${CKAN_VERSION} --depth 1 ${CKAN_GITHUB_BASEURL}/${repo}.git ${SRC_DIR}/${repo}
+      if [[ ! -d ${SRC_DIR}/${name} ]]; then
+        echo_msg "fetching ${name} @ ${branch} ..."
+        if [[ "${app}" == "core" ]]; then
+          git clone --depth 1 --branch ${branch} ${repo_url} ${SRC_DIR}/${name}
         else
-          git clone --branch ${DATAPUSHER_VERSION} --depth 1 ${CKAN_GITHUB_BASEURL}/${repo}.git ${SRC_DIR}/${repo}
+          git clone --branch ${branch} ${repo_url} ${SRC_DIR}/${name}
         fi
       else
-        echo ">> repo exists; ${repo}"
+        echo_msg "repo exists; ${name}"
       fi
-    fi
-  done
-
-  # clone eoc repos locally
-  for repo in "${EHA_GITHUB_REPO_NAMES[@]}"
-  do
-    if [[ ! -d ${SRC_DIR}/${repo} ]]; then
-      echo_msg "fetching repository for ${repo} ..."
-      git clone ${EHA_GITHUB_BASEURL}/${repo}.git ${SRC_DIR}/${repo}
-    else
-      echo ">> repo exists; ${repo}"
     fi
   done
 }
@@ -84,6 +66,7 @@ function gen_random_string {
 }
 
 function gen_env_file {
+  export HOSTNAME=biskit
   export DBNAME=ckan
   export DBUSER=ckan
   export DBPASS=$(gen_random_string)
@@ -143,7 +126,11 @@ case "${1:-''}" in
       echo -e "\033[93mUpdate created .env file then re-issue 'make init' again\033[0m"
     else
       echo_msg "fetching codes ..."
-      clone_repos ${@:2}
+      clone_repos "biskit"
+
+      if [[ "${2:-''}" == "--all" ]]; then
+        clone_repos "core"
+      fi
       echo_msg "done!"
     fi
   ;;
