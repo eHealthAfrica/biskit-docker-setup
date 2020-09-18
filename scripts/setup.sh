@@ -58,6 +58,12 @@ function clone_repos {
       else
         echo_msg "repo exists; ${name}"
       fi
+
+      # perform pseudo-install for ckan extensions
+      if [[ "${app}" != "core" ]]; then
+        echo_msg "performing pseudo-install for ${repo} ..."
+        pip install -e ${SRC_DIR}/${name}
+      fi
     fi
   done
 }
