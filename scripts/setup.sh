@@ -5,9 +5,10 @@ SRC_DIR="./src"
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
 
 declare -A REPO1=([name]=ckan [app]=core [branch]=ckan-2.8.4 [usr]=ckan)
-declare -A REPO2=([name]=datapusher [app]=core [branch]=master [usr]=ckan)
+declare -A REPO2=([name]=datapusher [app]=core [branch]=0.0.14 [usr]=ckan)
 declare -A REPO3=([name]=ckanext-biskit [app]=biskit [branch]=master [usr]=ehealthafrica)
 REPOS=('REPO1' 'REPO2' 'REPO3')
+APP="biskit"
 
 function check_openssl {
   which openssl > /dev/null
@@ -126,7 +127,7 @@ case "${1:-''}" in
       echo -e "\033[93mUpdate created .env file then re-issue 'make init' again\033[0m"
     else
       echo_msg "fetching codes ..."
-      clone_repos "biskit"
+      clone_repos ${APP}
 
       if [[ "${2:-''}" == "--all" ]]; then
         clone_repos "core"
