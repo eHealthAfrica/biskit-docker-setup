@@ -4,10 +4,10 @@ clean:
 	sudo rm -rf solr/mycores/ckan/data/
 
 init:
-	./src/bin/manage.sh init
+	./scripts/setup.sh init
 
 purge:
-	./src/bin/manage.sh purge
+	./scripts/setup.sh purge
 
 start-prod:
 	# sudo chown -R 8983:8983 solr
