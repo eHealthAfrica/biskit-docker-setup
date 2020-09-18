@@ -79,7 +79,7 @@ services:
       - redis
     volumes:
       - ckan_storage:/var/lib/ckan
-      - ./src/ckanext-biskit:/srvv/app/src/ckanext-biskit
+      - ./src/ckanext-biskit:/srv/app/src/ckanext-biskit
     env_file: .env
     networks:
       local:
