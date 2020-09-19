@@ -1,5 +1,5 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4 as base
+FROM ehealthafrica/ckan:2.8.4.r1 as base
 
 USER root
 RUN apt-get -q -y update \

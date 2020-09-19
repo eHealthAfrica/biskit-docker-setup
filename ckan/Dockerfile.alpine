@@ -1,5 +1,5 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4-alpine as base
+FROM ehealthafrica/ckan:2.8.4.r1-alpine as base
 
 USER root
 RUN apk add --update-cache \
