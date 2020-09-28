@@ -9,7 +9,7 @@ services:
     image: biskit-ckan
     build:
       context: ./ckan
-      dockerfile: Dockerfile.alpine
+      dockerfile: Dockerfile
       args:
         GITHUB_TOKEN: ${GITHUB_TOKEN}
     volumes:
