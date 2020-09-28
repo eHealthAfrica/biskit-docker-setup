@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+
+  #-----------------------------------#
+  #       CKAN                        #
+  #-----------------------------------#
+  ckan:
+    image: biskit-ckan
+    build:
+      context: ./ckan
+      dockerfile: Dockerfile
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    volumes:
+      - ckan_storage:/var/lib/ckan

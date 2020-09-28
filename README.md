@@ -2,11 +2,11 @@
 
 * [Introduction](#introdcution)
 * [Basic structure](#basicsetup)
-    * [CKAN](#ckan)
-    * [Postgres](#postgres)
-    * [SOLR](#solr)
-    * [DataPusher](#datapusher)
-    * [Redis](#redis)
+  * [CKAN](#ckan)
+  * [Postgres](#postgres)
+  * [SOLR](#solr)
+  * [DataPusher](#datapusher)
+  * [Redis](#redis)
 * [Envvars](#envvars)
 * [Quick Start](#quickstart)
 
@@ -62,7 +62,6 @@ Then add extension in `ckan_plugins` e.g:
 
 ```sh
 ENV CKAN__PLUGINS googleanalytics
-
 ```
 
 ## Envars
@@ -71,7 +70,7 @@ Environment variables are loaded from `.env` file. The base CKAN image included 
 `ckan/Dockerfile` loads [ckanext-envvars](https://github.com/okfn/ckanext-envvars)
 extension for reading the variables.
 
-To setup the env vars rename `.env.template` to `.env` and modify it depending on your
+To setup the env vars rename `env.template` to `.env` and modify it depending on your
 own needs. The Envvars extension checks for environmental variables conforming to an
 expected format and updates the corresponding CKAN config settings with its value.
 Follow the name formating explained in the [official docs](https://github.com/okfn/ckanext-envvars#ckanext-envvars)
@@ -81,19 +80,49 @@ for adding new variables.
 
 ## Quick start
 
-Rename the included `.env.template` to `.env` and modify it depending on your needs.
+> **Bash v4.x and above is required**
+
+To set up a local development environment begin by running:
+
+```sh
+./scripts/setup.sh init
+```
+
+This creates a `.env` file using `env.template`. The `.env` file defines environment variables required to run the setup.
+Review and update the `.env` file as necessary. Update the following environment variables:
+
+- `GITHUB_TOKEN`: Generate your GitHub token and input the value. Instructions are [here](
+  https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line).
+- Update value for `CKAN_SYSADMIN_NAME` & `CKAN_SYSADMIN_PASSWORD` to set the login credentials for the EOC Data Portal
+  installation as a system administrator.
+
+Afterwards run:
+
+```sh
+./scripts/setup.sh init
+```
+
+This time, all repositories for the setup will be cloned into the `src` folder.
 
 To start the portal use:
 
-    $ docker-compose up -d --build
+```sh
+docker-compose up --build
+```
+
+Open `http://localhost:5000` or `http://eoc:5000` in your browser. In order to use `http://eoc:5000` add
+
+```text
+127.0.0.1    eoc
+```
+
+to your `/etc/hosts` file.
 
 To stop the portal use:
 
-    $ docker-compose down
+```sh
+docker-compose down
+```
 
-To get the log information use:
-
-    $ docker-compose logs -f [service_name]
-
-Make sure that the solr directory has the right ownership `sudo chown -R 8983:8983 solr`
-or simply start the project by running `make up`.
+Make sure that the solr directory has the right ownership `sudo chown -R 8983:8983 solr` or simply start the project
+by running `make up`.

@@ -1,5 +1,5 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4 as base
+FROM ehealthafrica/ckan:2.8.4.r1 as base
 
 USER root
 RUN apt-get -q -y update \
@@ -12,22 +12,15 @@ RUN apt-get -q -y update \
 
 ARG GITHUB_TOKEN
 
+# avoid installing supervisor via apt-get as it needs to be run as ckan user
 RUN pip install --upgrade pip &&\
     pip install supervisor future &&\
     pip install -e git+https://github.com/eHealthAfrica/ckanext-hierarchy.git#egg=ckanext-hierarchy &&\
-    pip install -e git+https://github.com/ckan/ckanext-scheming.git#egg=ckanext-scheming &&\
-    pip install -r https://raw.githubusercontent.com/ckan/ckanext-scheming/master/requirements.txt &&\
-    pip install -e git+https://github.com/frictionlessdata/ckanext-validation#egg=ckanext-validation &&\
-    pip install -r https://raw.githubusercontent.com/frictionlessdata/ckanext-validation/master/requirements.txt &&\
+    pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics &&\
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-googleanalytics/master/requirements.txt &&\
     pip install -e git+https://github.com/ckan/ckanext-geoview.git#egg=ckanext-geoview &&\
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-geoview/master/pip-requirements.txt &&\
-    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/gather2_integration.git@v0.0.2#egg=ckanext-gather2_integration &&\
-    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/gather2_integration/v0.0.2/requirements.txt &&\
-    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-eoc.git@migration/ckan-2.8#egg=ckanext-eoc &&\
-    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-eoc/migration/ckan-2.8/requirements.txt\
-    pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics
-
-RUN pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git#egg=ckanext-biskit &&\
+    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git#egg=ckanext-biskit &&\
     pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt
 
 
@@ -39,7 +32,7 @@ VOLUME /var/lib/ckan/
 
 RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.plugins = ${CKAN__PLUGINS}"
 
-ENV CKAN_SITE_URL http://ckan:5000
+ENV CKAN_SITE_URL ${CKAN_SITE_URL}
 RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.site_url = ${CKAN_SITE_URL}"
 
 USER ckan

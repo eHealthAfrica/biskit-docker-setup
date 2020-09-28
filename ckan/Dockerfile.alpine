@@ -1,7 +1,5 @@
 # CKAN
-FROM ehealthafrica/ckan:2.8.4-alpine as base
-ENV CKAN_HOME /srv/app/src/ckan/ckan
-ENV GRID_HOME /srv/app/src/ckanext-grid
+FROM ehealthafrica/ckan:2.8.4.r1 as base
 
 USER root
 RUN apk add --update-cache \
@@ -29,22 +27,21 @@ RUN apk add --no-cache \
             openssl-dev \
             py-lxml \
             jpeg-dev \
-            zlib-dev \
-            supervisor
+            zlib-dev
+
 
 ARG GITHUB_TOKEN
 
+# avoid installing supervisor via apk add as it needs to be run as ckan user
 RUN pip install --upgrade pip &&\
+    pip install supervisor future &&\
+    pip install -e git+https://github.com/eHealthAfrica/ckanext-hierarchy.git#egg=ckanext-hierarchy &&\
     pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=ckanext-googleanalytics &&\
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-googleanalytics/master/requirements.txt &&\
     pip install -e git+https://github.com/ckan/ckanext-geoview.git#egg=ckanext-geoview &&\
-    pip install -r https://raw.githubusercontent.com/ckan/ckanext-geoview/master/pip-requirements.txt
-
-# install what follows from repos cloned locally
-ENV EXT_PATH ${APP_DIR}/src/extensions
-COPY src/extensions/ ${EXT_PATH}/
-RUN pip install -e ${EXT_PATH}/ckanext-biskit &&\
-    pip install -r ${EXT_PATH}/ckanext-biskit/requirements.txt
+    pip install -r https://raw.githubusercontent.com/ckan/ckanext-geoview/master/pip-requirements.txt &&\
+    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git#egg=ckanext-biskit &&\
+    pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt
 
 
 ENV CKAN__PLUGINS envvars biskit googleanalytics datastore datapusher stats image_view text_view \

@@ -1,32 +1,24 @@
-.PHONY: help deploy setup_minikube setup_aws setup_gcp
+.PHONY: clean init purge start-prod up-core up-ckan test
 
 clean:
 	sudo rm -rf solr/mycores/ckan/data/
 
 init:
-	./src/bin/manage.sh init
+	./scripts/setup.sh init
+
+purge:
+	./scripts/setup.sh purge
 
 start-prod:
 	# sudo chown -R 8983:8983 solr
-	docker-compose up -d --build
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
-gen-dev-compose-file:
-	@sed "s/      context: .\/ckan/      context: ./" docker-compose.yml | \
-	sed "s/      dockerfile: Dockerfile/      dockerfile: .\/src\/Dockerfile/" | \
-	sed "s/      \# placeholder: dev-mappings/      - .\/src\/extensions\/:\/srv\/app\/src\/extensions #i1/" | \
-	sed "s/ #i1/|      - .\/src\/core\/ckan\/:\/srv\/app\/src\/ckan/" | \
-	tr '|' '\n' \
-		> docker-compose.dev.yml
-
-build: gen-dev-compose-file
-	docker-compose -f ./docker-compose.dev.yml -p biskit build
-
-up-core: gen-dev-compose-file
+up-core:
 	# sudo chown -R 8983:8983 solr
-	docker-compose -f ./docker-compose.dev.yml -p biskit up postgres redis solr
+	docker-compose up postgres redis solr
 
-up-ckan: gen-dev-compose-file
-	docker-compose -f ./docker-compose.dev.yml -p biskit up datapusher ckan
+up-ckan:
+	docker-compose up datapusher ckan
 
 test:
 	pycodestyle --count --ignore=E501,E731 ./src/extensions/ckanext-biskit/ckanext/biskit
