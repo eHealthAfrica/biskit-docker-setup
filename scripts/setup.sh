@@ -5,7 +5,7 @@ SRC_DIR="./src"
 LINE=`printf -v row "%${COLUMNS:-$(tput cols)}s"; echo ${row// /=}`
 
 declare -A REPO1=([name]=ckan [app]=core [branch]=ckan-2.8.4 [usr]=ckan)
-declare -A REPO2=([name]=datapusher [app]=core [branch]=0.0.14 [usr]=ckan)
+declare -A REPO2=([name]=datapusher [app]=core [branch]=0.0.17 [usr]=ckan)
 declare -A REPO3=([name]=ckanext-biskit [app]=biskit [branch]=master [usr]=ehealthafrica)
 REPOS=('REPO1' 'REPO2' 'REPO3')
 APP="biskit"
