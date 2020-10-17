@@ -56,6 +56,9 @@ RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.plugins = $
 ENV CKAN_SITE_URL ${CKAN_SITE_URL}
 RUN paster --plugin=ckan config-tool ${APP_DIR}/production.ini "ckan.site_url = ${CKAN_SITE_URL}"
 
+COPY extra_scripts.sh  ${APP_DIR}/docker-entrypoint.d/extra_scripts.sh
+RUN chmod +x ${APP_DIR}/docker-entrypoint.d/extra_scripts.sh
+
 USER ckan
 
 CMD ["/srv/app/start_ckan.sh"]
