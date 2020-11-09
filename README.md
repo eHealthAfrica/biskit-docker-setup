@@ -61,7 +61,7 @@ RUN  pip install -e git+https://github.com/ckan/ckanext-googleanalytics.git#egg=
 Then add extension in `ckan_plugins` e.g:
 
 ```sh
-ENV CKAN__PLUGINS googleanalytics
+ENV CKAN__PLUGINS envvars s3filestore googleanalytics
 ```
 
 ## Envars

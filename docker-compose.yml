@@ -49,7 +49,7 @@ services:
   #       Datapusher                  #
   #-----------------------------------#
   datapusher:
-    image: keitaro/ckan-datapusher:0.0.14
+    image: keitaro/ckan-datapusher:0.0.17
     hostname: datapusher
     domainname: localdomain
     ports:
