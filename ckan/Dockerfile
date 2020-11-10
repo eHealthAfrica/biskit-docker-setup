@@ -20,7 +20,7 @@ RUN pip install --upgrade pip &&\
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-googleanalytics/master/requirements.txt &&\
     pip install -e git+https://github.com/ckan/ckanext-geoview.git#egg=ckanext-geoview &&\
     pip install -r https://raw.githubusercontent.com/ckan/ckanext-geoview/master/pip-requirements.txt &&\
-    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git@v1.0.0#egg=ckanext-biskit &&\
+    pip install -e git+https://${GITHUB_TOKEN}@github.com/eHealthAfrica/ckanext-biskit.git@v1.0.1#egg=ckanext-biskit &&\
     pip install -r https://${GITHUB_TOKEN}@raw.githubusercontent.com/eHealthAfrica/ckanext-biskit/master/requirements.txt
 
 
