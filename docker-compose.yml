@@ -55,7 +55,7 @@ services:
     ports:
       - "8000:8000"
     links:
-      - "ckan:eoc"
+      - "ckan:biskit"
     networks:
       local:
 
