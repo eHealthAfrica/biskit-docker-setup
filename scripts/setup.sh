@@ -25,7 +25,7 @@ function echo_msg {
 }
 
 function final_warning {
-  HOSTNAME="eoc"
+  HOSTNAME="biskit"
   lin_path="/etc/hosts"
   win_path="C:\Windows\System32\Drivers\etc\hosts"
 
