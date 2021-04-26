@@ -13,6 +13,9 @@ start-prod:
 	# sudo chown -R 8983:8983 solr
 	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
+down:
+	docker-compose down
+
 up-core:
 	# sudo chown -R 8983:8983 solr
 	docker-compose up postgres redis solr

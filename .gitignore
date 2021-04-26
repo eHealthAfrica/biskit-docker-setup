@@ -18,6 +18,7 @@ tlog*
 src/
 solr/mycores/ckan/data/
 
+\!*
 .idea/
 .vscode/
 [._]tmp/
